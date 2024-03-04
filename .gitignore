@@ -177,3 +177,5 @@ out
 
 solution.ts
 solution.test.ts
+
+*.js

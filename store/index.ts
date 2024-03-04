@@ -42,4 +42,5 @@ export const selectedExerciseAtom = atomWithStorage<Option<Exercise>>(
   "selectedExercise",
   "0_hello",
   storage,
+  { getOnInit: true },
 );

@@ -2,18 +2,19 @@ import { $ } from "bun";
 import { spawnSync } from "node:child_process";
 import { resolve as resolvePath } from "node:path";
 
-export default async function verify(code: string) {
-  const filepath = resolvePath(__dirname, "solution.test.ts");
+export default async function run(code: string) {
+  const filepath = resolvePath(__dirname, "solution.ts");
 
   await Bun.write(filepath, code);
 
-  const command = `bun test ${filepath}; rm ${filepath}`;
+  const command = `bun run ${filepath}; rm ${filepath}`;
 
   try {
     spawnSync(command, { shell: true, stdio: "inherit" });
   } catch (_err1) {
     try {
-      await $`${command}; rm ${filepath}`;
+      const out = await $`${command}; rm ${filepath}`.text();
+      console.log(out);
     } catch (err2) {
       console.error(err2);
     }

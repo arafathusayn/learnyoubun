@@ -39,15 +39,39 @@ async function main(argc: number, argv: string[]) {
       process.exit(0);
     }
 
-    if (command === "verify" || command === "check" || command === "test") {
+    if (command === "run" || command === "exec") {
       const last = argv[argv.length - 1];
 
       if (!last || argc < 4) {
-        console.error(`\nNo file provided to verify.\n`);
+        console.error(`\nNo file provided to run.\n`);
         process.exit(1);
       }
 
       const code = await Bun.file(last).text();
+
+      const selectedExercise = store.get(selectedExerciseAtom);
+
+      const run = require(resolvePath(
+        __dirname,
+        "exercises",
+        selectedExercise,
+        "run.ts",
+      ));
+
+      await run.default(code);
+
+      process.exit(0);
+    }
+
+    if (command === "verify" || command === "check" || command === "test") {
+      const filepath = resolvePath(__dirname, argv[3] as string);
+
+      if (!filepath || argc < 4) {
+        console.error(`\nNo file provided to verify.\n`);
+        process.exit(1);
+      }
+
+      const code = await Bun.file(resolvePath(__dirname, filepath)).text();
 
       const selectedExercise = store.get(selectedExerciseAtom);
 
@@ -60,10 +84,9 @@ async function main(argc: number, argv: string[]) {
 
       const testCodeTemplate = await Bun.file(testFilePath).text();
 
-      const testCode = testCodeTemplate.replace(
-        "{{FILEPATH}}",
-        resolvePath(__dirname, last),
-      );
+      const testCode = testCodeTemplate
+        .replace("{{FILEPATH}}", filepath)
+        .replace("`{{CODE}}`;", "// " + code.trim().split("\n").join("\n// "));
 
       const verify = require(resolvePath(
         __dirname,

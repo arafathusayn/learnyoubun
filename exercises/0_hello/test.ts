@@ -10,10 +10,11 @@ test(
       .toString()
       .replace(/\n$/, "");
 
-    const receivedFromYou = output;
+    //#region Your Code
+    `{{CODE}}`;
+    //#endregion Your Code
     const expected = "HI MOM";
-
-    expect(receivedFromYou).toBe(expected);
+    expect(output).toBe(expected);
   },
   { timeout: 1000 },
 );
