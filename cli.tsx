@@ -19,6 +19,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 */
 
+console.clear();
+
 import { render } from "ink";
 import BigText from "ink-big-text";
 import Gradient from "ink-gradient";
@@ -29,14 +31,12 @@ import { columnsAtom, rowsAtom, store } from "./store";
 import { safeExit } from "./utils/misc";
 import parseKeypress from "./utils/parse-keypress";
 
-async function main() {
+async function main(_argc: number, _argv: string[]) {
   process.stdin.setRawMode(true);
 
   process.stdin.addListener("data", handleKeypress);
 
   process.stdout.addListener("resize", handleResize);
-
-  console.clear();
 
   const { waitUntilExit } = render(<App />, {
     exitOnCtrlC: true,
@@ -49,7 +49,10 @@ async function main() {
   });
 }
 
-main();
+main(process.argv.length, process.argv).catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
 
 function App() {
   return (
