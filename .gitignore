@@ -174,3 +174,6 @@ out
 .DS_Store
 
 .learnyoubun
+
+solution.ts
+solution.test.ts

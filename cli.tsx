@@ -19,19 +19,71 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 */
 
-console.clear();
-
 import { render } from "ink";
 import BigText from "ink-big-text";
 import Gradient from "ink-gradient";
+import { resolve as resolvePath } from "path";
 
 import Divider from "./components/Divider";
 import ExerciseList from "./components/ExerciseList";
-import { columnsAtom, rowsAtom, store } from "./store";
+import { columnsAtom, rowsAtom, selectedExerciseAtom, store } from "./store";
 import { safeExit } from "./utils/misc";
 import parseKeypress from "./utils/parse-keypress";
 
-async function main(_argc: number, _argv: string[]) {
+async function main(argc: number, argv: string[]) {
+  if (argc > 2) {
+    const command = argv[2];
+
+    if (command === "version" || command === "-v" || command === "--version") {
+      console.log(`\nversion: ${require("./package.json").version}\n`);
+      process.exit(0);
+    }
+
+    if (command === "verify" || command === "check" || command === "test") {
+      const last = argv[argv.length - 1];
+
+      if (!last || argc < 4) {
+        console.error(`\nNo file provided to verify.\n`);
+        process.exit(1);
+      }
+
+      const code = await Bun.file(last).text();
+
+      const selectedExercise = store.get(selectedExerciseAtom);
+
+      const testFilePath = resolvePath(
+        __dirname,
+        "exercises",
+        selectedExercise,
+        "test.ts",
+      );
+
+      const testCodeTemplate = await Bun.file(testFilePath).text();
+
+      const testCode = testCodeTemplate.replace(
+        "{{FILEPATH}}",
+        resolvePath(__dirname, last),
+      );
+
+      const verify = require(resolvePath(
+        __dirname,
+        "exercises",
+        selectedExercise,
+        "verify.ts",
+      ));
+
+      await verify.default(testCode);
+
+      process.exit(0);
+    }
+
+    console.error(`\nUnknown command: ${command}\n`);
+
+    process.exit(0);
+  }
+
+  console.clear();
+
   process.stdin.setRawMode(true);
 
   process.stdin.addListener("data", handleKeypress);
