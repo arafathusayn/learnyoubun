@@ -17,8 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { atom, getDefaultStore } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-import type { Exercise } from "../exercises";
-import type { Option } from "../utils/option";
+
+import { type Exercise } from "../exercises";
+import { none, type Option } from "../utils/option";
 import { storage } from "../utils/storage";
 
 export const store = getDefaultStore();
@@ -26,9 +27,19 @@ export const store = getDefaultStore();
 export const columnsAtom = atom(process.stdout.columns);
 export const rowsAtom = atom(process.stdout.rows);
 
+export const instructionAtom = atom<Option<string>>(
+  none() as unknown as Option<string>,
+);
+
 export const currentExerciseAtom = atomWithStorage<Option<Exercise>>(
   "currentExercise",
   "0_hello",
   storage,
   { getOnInit: true },
+);
+
+export const selectedExerciseAtom = atomWithStorage<Option<Exercise>>(
+  "selectedExercise",
+  "0_hello",
+  storage,
 );

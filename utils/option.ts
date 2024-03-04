@@ -96,3 +96,14 @@ export function flatMap<T, U>(
 
   return fn(some(value));
 }
+
+export function match<T, U>(
+  value: Option<T>,
+  { onSome, onNone }: { onSome: (value: T) => U; onNone: () => U },
+): U {
+  if (isNone(value)) {
+    return onNone();
+  }
+
+  return onSome(some(value));
+}

@@ -12,12 +12,6 @@ To make a Bun program, create a new file with a `.js` extension and start writin
 $ bun hello.js
 ```
 
-or
-
-```sh
-$ bun run hello.js
-```
-
 You can write to the console in the same way as in the browser:
 
 ```js

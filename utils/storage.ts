@@ -58,13 +58,13 @@ export function createAsyncStorage<T>(data: Storage<T>) {
 
       return some(item) as Option<T>;
     },
-    setItem: (key: string, value: T): void => {
+    setItem: async (key: string, value: T) => {
       data[key] = value;
-      queueMicrotask(() => Bun.write(storagePath, JSON.stringify(data)));
+      await Bun.write(storagePath, JSON.stringify(data));
     },
-    removeItem: (key: string): void => {
+    removeItem: async (key: string) => {
       data[key] = undefined as T;
-      queueMicrotask(() => Bun.write(storagePath, JSON.stringify(data)));
+      await Bun.write(storagePath, JSON.stringify(data));
     },
   };
 }
