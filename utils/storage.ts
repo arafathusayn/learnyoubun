@@ -15,9 +15,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import type { SyncStorage } from "jotai/vanilla/utils/atomWithStorage";
+import { existsSync } from "node:fs";
 import { resolve as resolvePath } from "node:path";
-import type { Exercise } from "../exercises";
-import { isNone, none, some, type Option } from "./option";
+import { storageSchema, type StorageSchmeaType } from "../schema";
+import { isNone, none, some } from "./option";
 
 const storageDir = resolvePath(
   process.env.LYB_STORAGE_DIR || process.cwd(),
@@ -30,41 +32,50 @@ const storagePath = resolvePath(storageDir, storageFilename);
 
 let storageFile = Bun.file(storagePath);
 
-if (storageFile.size === 0) {
-  Bun.write(storagePath, "{}");
+if (storageFile.size === 0 || !existsSync(storagePath)) {
+  const data = {
+    currentExercise: "0_hello",
+    selectedExercise: "0_hello",
+  } as const satisfies StorageSchmeaType;
+
+  await Bun.write(storagePath, JSON.stringify(data));
 }
 
 storageFile = Bun.file(storagePath, { type: "application/json" });
 
-// remove type-faith later in the future
-const data = (await storageFile.json()) as Storage<Exercise>;
+let data = (await storageFile.json()) as StorageSchmeaType;
 
-export const storage = createAsyncStorage(data);
+const result = storageSchema.safeParse(data);
 
-export type Storage<T> = {
-  currentExercise: T;
-} & {
-  [key: string]: T;
-};
+if (!result.success) {
+  data = {
+    currentExercise: "0_hello",
+    selectedExercise: "0_hello",
+  } as const satisfies StorageSchmeaType;
 
-export function createAsyncStorage<T>(data: Storage<T>) {
+  await Bun.write(storagePath, JSON.stringify(data));
+}
+
+export const storage = createAsyncStorage(data) as SyncStorage<any>;
+
+export function createAsyncStorage(data: Record<string, unknown>) {
   return {
-    getItem: (key: string): Option<T> => {
+    getItem: (key: string) => {
       const item = data[key];
 
       if (isNone(item)) {
-        return none() as Option<T>;
+        return none();
       }
 
-      return some(item) as Option<T>;
+      return some(item);
     },
-    setItem: async (key: string, value: T) => {
+    setItem: (key: string, value: unknown) => {
       data[key] = value;
-      await Bun.write(storagePath, JSON.stringify(data));
+      Bun.write(storagePath, JSON.stringify(data));
     },
-    removeItem: async (key: string) => {
-      data[key] = undefined as T;
-      await Bun.write(storagePath, JSON.stringify(data));
+    removeItem: (key: string) => {
+      data[key] = undefined;
+      Bun.write(storagePath, JSON.stringify(data));
     },
   };
 }
