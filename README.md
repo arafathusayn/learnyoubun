@@ -2,6 +2,8 @@
 
 An intro to Bun via a set of self-guided workshops using Terminal.
 
+> The project is in pre-release alpha stage (not version `1.0.0` yet)
+
 ## Install
 
 ```sh
