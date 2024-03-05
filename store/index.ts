@@ -59,6 +59,12 @@ export const currentExerciseAtom = atomWithStorage<Exercise>(
   storage,
 );
 
+store.set(currentExerciseAtom, defaultExercise);
+
+export const currentExerciseDescriptionAtom = atom<string>(
+  exercises.find((e) => e.value === defaultExercise)?.description || "",
+);
+
 export const selectedExerciseAtom = atomWithStorage<Exercise>(
   "selectedExercise",
   "0_hello",

@@ -18,14 +18,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import cliMd from "cli-markdown";
 import { Box, Text } from "ink";
 import SelectInput from "ink-select-input";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { resolve as resolvePath } from "node:path";
 import { platform } from "os";
 
-import { useLayoutEffect, useState } from "react";
 import { enabledExercises, exercises } from "../../exercises";
 import {
   currentExerciseAtom,
+  currentExerciseDescriptionAtom,
   instructionAtom,
   nextUndoneExerciseIndex,
   selectedExerciseAtom,
@@ -38,11 +38,9 @@ const enterKeyName = platform() === "darwin" ? "return" : "enter";
 
 function ExerciseList() {
   const [currentExercise, setCurrentExercise] = useAtom(currentExerciseAtom);
-  const [selectedExercise, setSelectedExercise] = useAtom(selectedExerciseAtom);
   const [instuction, setInstruction] = useAtom(instructionAtom);
-  const [description, setDescription] = useState(
-    exercises.find((e) => e.value === currentExercise)?.description,
-  );
+  const [description, setDescription] = useAtom(currentExerciseDescriptionAtom);
+  const setSelectedExercise = useSetAtom(selectedExerciseAtom);
 
   async function handleSelect(item: Item) {
     const exercise = exercises.find((e) => e.value === item.value);
@@ -79,12 +77,6 @@ function ExerciseList() {
       safeExit();
     }, 300);
   }
-
-  useLayoutEffect(() => {
-    setDescription(
-      () => exercises.find((e) => e.value === currentExercise)?.description,
-    );
-  }, []);
 
   return (
     <Box alignItems="flex-start" marginTop={2} flexDirection="column">
@@ -134,7 +126,7 @@ function ExerciseList() {
                     (e) => e.value === item.value,
                   );
 
-                  setDescription(exercise?.description);
+                  setDescription(exercise?.description || "");
 
                   if (
                     isNone(exercise) ||
