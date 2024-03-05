@@ -6,29 +6,29 @@ Write a program that accepts one or more numbers as command-line arguments and p
 
 ## HINTS
 
-You can access command-line arguments via the global `process` object. The `process` object has an `argv` property which is an array containing the complete command-line. i.e. `process.argv`.
+You can access command-line arguments via the global `Bun` object. The `Bun` object has an `argv` property which is an array containing the complete command-line. i.e. `Bun.argv`.
 
 To get started, write a program that simply contains:
 
 ```js
-console.log(process.argv);
+console.log(Bun.argv);
 ```
 
 Run it with `bun baby-steps.js` and some numbers as arguments. e.g:
 
 ```sh
-$ bun baby-steps.js
+$ bun baby-steps.js 1 2 3
 ```
 
 In which case the output would be an array looking something like:
 
 ```js
-["bun", "/path/to/your/baby-steps.js", "1", "2", "3"];
+["/path/to/bun", "/path/to/your/baby-steps.js", "1", "2", "3"];
 ```
 
-You'll need to think about how to loop through the number arguments so you can output just their sum. The first element of the process.argv array is always 'bun', and the second element is always the path to your baby-steps.js file, so you need to start at the 3rd element (index 2), adding each item to the total until you reach the end of the array.
+You'll need to think about how to loop through the number arguments so you can output just their sum. The first element of the Bun.argv array is always 'bun', and the second element is always the path to your baby-steps.js file, so you need to start at the 3rd element (index 2), adding each item to the total until you reach the end of the array.
 
-Also be aware that all elements of `process.argv` are strings and you may need to _coerce_ them into numbers. You can do this by prefixing the property with `+` or passing it to `Number()`. e.g. `+process.argv[2]` or `Number(process.argv[2])`.
+Also be aware that all elements of `Bun.argv` are strings and you may need to _coerce_ them into numbers. You can do this by prefixing the property with `+` or passing it to `Number()`. e.g. `+Bun.argv[2]` or `Number(Bun.argv[2])`.
 
 Input Example:
 
@@ -45,6 +45,7 @@ Output Example:
 Check to see if your program is correct by running this command:
 
 ```sh
+$ learnyounode run baby-steps.js
 $ learnyounode verify baby-steps.js
 ```
 
