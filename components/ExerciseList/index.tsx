@@ -15,6 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import cliMd from "cli-markdown";
 import { Box, Text } from "ink";
 import SelectInput from "ink-select-input";
 import { useAtom } from "jotai";
@@ -65,7 +66,7 @@ function ExerciseList() {
 
     const content = await file.text();
 
-    setInstruction(() => content);
+    setInstruction(() => cliMd(content));
 
     const tid = setTimeout(() => {
       clearTimeout(tid);
