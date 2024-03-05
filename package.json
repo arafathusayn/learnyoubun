@@ -1,7 +1,7 @@
 {
   "name": "learnyoubun",
   "description": "An intro to Bun via a set of self-guided workshops.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": {
     "name": "Arafat Husayn",
     "email": "hello@arafat.dev"
@@ -10,7 +10,8 @@
     "learnyoubun": "./cli.tsx"
   },
   "scripts": {
-    "dev": "bun run --hot cli.tsx"
+    "dev": "bun run --hot cli.tsx",
+    "check": "tsc"
   },
   "module": "cli.tsx",
   "type": "module",

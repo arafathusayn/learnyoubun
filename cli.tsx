@@ -19,7 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 */
 
-import { render } from "ink";
+import { Box, Text, render } from "ink";
 import BigText from "ink-big-text";
 import Gradient from "ink-gradient";
 import { resolve as resolvePath } from "path";
@@ -30,12 +30,14 @@ import { columnsAtom, rowsAtom, selectedExerciseAtom, store } from "./store";
 import { safeExit } from "./utils/misc";
 import parseKeypress from "./utils/parse-keypress";
 
+const version = require("./package.json").version;
+
 async function main(argc: number, argv: string[]) {
   if (argc > 2) {
     const command = argv[2];
 
     if (command === "version" || command === "-v" || command === "--version") {
-      console.log(`\nversion: ${require("./package.json").version}\n`);
+      console.log(`\nversion: ${version}\n`);
       process.exit(0);
     }
 
@@ -113,7 +115,7 @@ async function main(argc: number, argv: string[]) {
 
   process.stdout.addListener("resize", handleResize);
 
-  const { waitUntilExit } = render(<App />, {
+  const { waitUntilExit } = render(<Root />, {
     exitOnCtrlC: true,
   });
 
@@ -129,9 +131,13 @@ main(process.argv.length, process.argv).catch((err) => {
   process.exit(1);
 });
 
-function App() {
+function Root() {
   return (
     <>
+      <Box justifyContent="center" width="100%" position="absolute">
+        <Text dimColor>v{version}</Text>
+      </Box>
+
       <Gradient name="pastel">
         <BigText text="Learn You Bun" align="center" font="tiny" />
       </Gradient>

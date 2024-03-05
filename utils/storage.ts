@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import type { SyncStorage } from "jotai/vanilla/utils/atomWithStorage";
 import { existsSync } from "node:fs";
 import { resolve as resolvePath } from "node:path";
+import type { Exercise } from "../exercises";
 import { storageSchema, type StorageSchmeaType } from "../schema";
 import { isNone, none, some } from "./option";
 
@@ -58,6 +59,12 @@ if (!result.success) {
 
 export const storage = createAsyncStorage(data) as SyncStorage<any>;
 
+export const doneExercises =
+  (storage.getItem(
+    "doneExercises" satisfies keyof StorageSchmeaType,
+    [],
+  ) as StorageSchmeaType["doneExercises"]) ?? [];
+
 export function createAsyncStorage(data: Record<string, unknown>) {
   return {
     getItem: (key: string) => {
@@ -78,4 +85,21 @@ export function createAsyncStorage(data: Record<string, unknown>) {
       Bun.write(storagePath, JSON.stringify(data));
     },
   };
+}
+
+export async function savePassedExercise(exerciseValue: Exercise) {
+  const file = Bun.file(storagePath);
+
+  if (!file.exists()) {
+    return;
+  }
+
+  const prev = (await file.json()) as StorageSchmeaType;
+
+  const data = {
+    ...prev,
+    doneExercises: [...(prev.doneExercises ?? []), exerciseValue],
+  } satisfies StorageSchmeaType;
+
+  await Bun.write(storagePath, JSON.stringify(data));
 }

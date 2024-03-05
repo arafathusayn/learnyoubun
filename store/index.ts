@@ -18,9 +18,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import { atom, getDefaultStore } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
-import type { Exercise } from "../exercises";
+import { exercises, type Exercise } from "../exercises";
 import { none, type Option } from "../utils/option";
-import { storage } from "../utils/storage";
+import { doneExercises, storage } from "../utils/storage";
 
 export const store = getDefaultStore();
 
@@ -31,11 +31,20 @@ export const instructionAtom = atom<Option<string>>(
   none() as unknown as Option<string>,
 );
 
+let nextUndoneExerciseIdx = exercises.findIndex(
+  (e) => !doneExercises.includes(e.value),
+);
+
+if (nextUndoneExerciseIdx === -1) {
+  nextUndoneExerciseIdx = 0;
+}
+
+export const nextUndoneExerciseIndex = nextUndoneExerciseIdx;
+
 export const currentExerciseAtom = atomWithStorage<Exercise>(
   "currentExercise",
-  "0_hello",
+  exercises[nextUndoneExerciseIndex]?.value || "0_hello",
   storage,
-  { getOnInit: true },
 );
 
 export const selectedExerciseAtom = atomWithStorage<Exercise>(

@@ -2,6 +2,7 @@ import { $ } from "bun";
 import { describe, expect, test } from "bun:test";
 
 import { exercises } from "..";
+import { savePassedExercise } from "../../utils/storage";
 
 describe(`{{FILEPATH}}`, () => {
   test(
@@ -16,6 +17,8 @@ describe(`{{FILEPATH}}`, () => {
       //#endregion Your Code
       const expected = "HELLO WORLD";
       expect(output).toBe(expected);
+
+      savePassedExercise("0_hello");
     },
     { timeout: 1000 },
   );

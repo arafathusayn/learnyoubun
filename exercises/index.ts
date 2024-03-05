@@ -22,3 +22,7 @@ export const exercises = [
 ] as const;
 
 export type Exercise = (typeof exercises)[number]["value"];
+
+export const enabledExercises = exercises.filter(
+  (e) => e.value !== "coming_soon",
+);

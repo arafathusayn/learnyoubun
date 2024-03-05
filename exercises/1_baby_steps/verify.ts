@@ -7,7 +7,7 @@ export default async function verify(code: string) {
 
   await Bun.write(filepath, code);
 
-  const command = `bun test ${filepath}; rm ${filepath}`;
+  const command = `bun test --bail ${filepath}; rm ${filepath}`;
 
   try {
     spawnSync(command, { shell: true, stdio: "inherit" });

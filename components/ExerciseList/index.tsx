@@ -20,27 +20,35 @@ import { Box, Text } from "ink";
 import SelectInput from "ink-select-input";
 import { useAtom } from "jotai";
 import { resolve as resolvePath } from "node:path";
+import { platform } from "os";
 
-import { exercises } from "../../exercises";
+import { useLayoutEffect, useState } from "react";
+import { enabledExercises, exercises } from "../../exercises";
 import {
   currentExerciseAtom,
   instructionAtom,
+  nextUndoneExerciseIndex,
   selectedExerciseAtom,
+  store,
 } from "../../store";
 import { safeExit } from "../../utils/misc";
 import { isNone, match } from "../../utils/option";
+import { doneExercises } from "../../utils/storage";
+
+const enterKeyName = platform() === "darwin" ? "return" : "enter";
 
 function ExerciseList() {
   const [currentExercise, setCurrentExercise] = useAtom(currentExerciseAtom);
   const [selectedExercise, setSelectedExercise] = useAtom(selectedExerciseAtom);
   const [instuction, setInstruction] = useAtom(instructionAtom);
-
-  let i = 0;
+  const [description, setDescription] = useState(
+    exercises.find((e) => e.value === currentExercise)?.description,
+  );
 
   async function handleSelect(item: Item) {
     const exercise = exercises.find((e) => e.value === item.value);
 
-    if (isNone(exercise)) {
+    if (isNone(exercise) || !enabledExercises.includes(exercise)) {
       return;
     }
 
@@ -49,7 +57,6 @@ function ExerciseList() {
     const found = exercises.find((e) => e.value === currentExercise)?.value;
 
     if (!found) {
-      console.error(`Exercise not found: ${currentExercise}`);
       return;
     }
 
@@ -74,6 +81,13 @@ function ExerciseList() {
     }, 300);
   }
 
+  useLayoutEffect(() => {
+    setDescription(
+      exercises.find((e) => e.value === store.get(currentExerciseAtom))
+        ?.description,
+    );
+  }, []);
+
   return (
     <Box alignItems="flex-start" marginTop={2} flexDirection="column">
       {match(instuction, {
@@ -89,17 +103,32 @@ function ExerciseList() {
           >
             <Box flexDirection="column" gap={2} width="33%">
               <SelectInput
-                itemComponent={({ isSelected, label }) => (
-                  <Text
-                    color={isSelected ? "greenBright" : undefined}
-                    bold={isSelected}
-                  >
-                    {i++}. {label}
-                  </Text>
-                )}
-                initialIndex={exercises.findIndex(
-                  (e) => e.value === currentExercise,
-                )}
+                itemComponent={({ isSelected, label }) => {
+                  const enabled = !!enabledExercises.find(
+                    (e) => e.label === label,
+                  );
+
+                  const curr = exercises.find((e) => e.label === label)?.value;
+
+                  const isDone = curr && doneExercises.includes(curr);
+
+                  const index = exercises.findIndex((e) => e.label === label);
+
+                  return (
+                    <>
+                      <Text
+                        color={isSelected ? "greenBright" : undefined}
+                        bold={isSelected}
+                        dimColor={!enabled || isDone}
+                        strikethrough={isDone}
+                      >
+                        {index}. {label} {isDone ? "[completed]" : ""}
+                      </Text>
+                      <Text dimColor>{isDone ? " ✅" : ""}</Text>
+                    </>
+                  );
+                }}
+                initialIndex={nextUndoneExerciseIndex}
                 items={exercises as unknown as Item[]}
                 onSelect={handleSelect}
                 onHighlight={(item) => {
@@ -107,7 +136,12 @@ function ExerciseList() {
                     (e) => e.value === item.value,
                   );
 
-                  if (isNone(exercise)) {
+                  setDescription(exercise?.description);
+
+                  if (
+                    isNone(exercise) ||
+                    !enabledExercises.includes(exercise)
+                  ) {
                     return;
                   }
 
@@ -115,16 +149,11 @@ function ExerciseList() {
                 }}
               />
 
-              <Text bold>Press Enter to start the exercise</Text>
+              <Text bold>Press {enterKeyName} key to start the exercise</Text>
             </Box>
 
-            <Box width="66%">
-              <Text dimColor>
-                {
-                  exercises.find((e) => e.value === currentExercise)
-                    ?.description
-                }
-              </Text>
+            <Box width="66%" marginTop={1}>
+              <Text dimColor>{description}</Text>
             </Box>
           </Box>
         ),
