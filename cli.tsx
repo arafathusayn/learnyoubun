@@ -40,14 +40,14 @@ async function main(argc: number, argv: string[]) {
     }
 
     if (command === "run" || command === "exec") {
-      const last = argv[argv.length - 1];
+      const filepath = resolvePath(process.cwd(), argv[3] as string);
 
-      if (!last || argc < 4) {
+      if (!filepath || argc < 4) {
         console.error(`\nNo file provided to run.\n`);
         process.exit(1);
       }
 
-      const code = await Bun.file(last).text();
+      const code = await Bun.file(filepath).text();
 
       const selectedExercise = store.get(selectedExerciseAtom);
 
@@ -64,7 +64,7 @@ async function main(argc: number, argv: string[]) {
     }
 
     if (command === "verify" || command === "check" || command === "test") {
-      const filepath = resolvePath(__dirname, argv[3] as string);
+      const filepath = resolvePath(process.cwd(), argv[3] as string);
 
       if (!filepath || argc < 4) {
         console.error(`\nNo file provided to verify.\n`);
