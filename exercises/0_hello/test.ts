@@ -13,7 +13,7 @@ test(
     //#region Your Code
     `{{CODE}}`;
     //#endregion Your Code
-    const expected = "HI MOM";
+    const expected = "HELLO WORLD";
     expect(output).toBe(expected);
   },
   { timeout: 1000 },

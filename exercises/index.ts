@@ -1,7 +1,7 @@
 export const exercises = [
   {
     label: "Hello World!",
-    description: `Write a program that prints the text "HI MOM" to the console.`,
+    description: `Write a program that prints the text "HELLO WORLD" to the console.`,
     value: "0_hello",
   },
   {
