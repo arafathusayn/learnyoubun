@@ -29,7 +29,6 @@ import {
   instructionAtom,
   nextUndoneExerciseIndex,
   selectedExerciseAtom,
-  store,
 } from "../../store";
 import { safeExit } from "../../utils/misc";
 import { isNone, match } from "../../utils/option";
@@ -83,8 +82,7 @@ function ExerciseList() {
 
   useLayoutEffect(() => {
     setDescription(
-      exercises.find((e) => e.value === store.get(currentExerciseAtom))
-        ?.description,
+      () => exercises.find((e) => e.value === currentExercise)?.description,
     );
   }, []);
 
@@ -124,7 +122,7 @@ function ExerciseList() {
                       >
                         {index}. {label} {isDone ? "[completed]" : ""}
                       </Text>
-                      <Text dimColor>{isDone ? "\t✅" : ""}</Text>
+                      <Text dimColor>{isDone ? " ✅" : ""}</Text>
                     </>
                   );
                 }}
@@ -152,7 +150,7 @@ function ExerciseList() {
               <Text bold>Press {enterKeyName} key to start the exercise</Text>
             </Box>
 
-            <Box width="66%" marginTop={1}>
+            <Box width="66%" marginTop={1} alignItems="flex-end">
               <Text dimColor>{description}</Text>
             </Box>
           </Box>

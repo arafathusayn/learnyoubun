@@ -32,13 +32,13 @@ export const instructionAtom = atom<Option<string>>(
   none() as unknown as Option<string>,
 );
 
-let nextUndoneExerciseIdx = exercises.findIndex((e) =>
-  doneExercises.length > 0 ? !doneExercises.includes(e.value) : false,
+let nextUndoneExerciseIdx = exercises.findIndex(
+  (e) => doneExercises.length > 0 && !doneExercises.includes(e.value),
 );
 
 export const defaultExercise: StorageSchmeaType["currentExercise"] =
-  storage.getItem("currentExercise", "0_hello") ||
   exercises[nextUndoneExerciseIdx]?.value ||
+  storage.getItem("currentExercise", "0_hello") ||
   "0_hello";
 
 if (nextUndoneExerciseIdx === -1) {
@@ -57,7 +57,6 @@ export const currentExerciseAtom = atomWithStorage<Exercise>(
   "currentExercise",
   defaultExercise,
   storage,
-  { getOnInit: true },
 );
 
 export const selectedExerciseAtom = atomWithStorage<Exercise>(
