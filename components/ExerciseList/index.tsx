@@ -124,7 +124,7 @@ function ExerciseList() {
                       >
                         {index}. {label} {isDone ? "[completed]" : ""}
                       </Text>
-                      <Text dimColor>{isDone ? " ✅" : ""}</Text>
+                      <Text dimColor>{isDone ? "\t✅" : ""}</Text>
                     </>
                   );
                 }}
