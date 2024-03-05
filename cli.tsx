@@ -85,7 +85,7 @@ async function main(argc: number, argv: string[]) {
       const testCodeTemplate = await Bun.file(testFilePath).text();
 
       const testCode = testCodeTemplate
-        .replace("{{FILEPATH}}", filepath)
+        .replaceAll("{{FILEPATH}}", filepath)
         .replace("`{{CODE}}`;", "// " + code.trim().split("\n").join("\n// "));
 
       const verify = require(resolvePath(
