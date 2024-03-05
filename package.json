@@ -23,6 +23,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "boganipsum": "^0.2.0",
     "cli-markdown": "^3.2.2",
     "ink": "^4.4.1",
     "ink-big-text": "^2.0.0",

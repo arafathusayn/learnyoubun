@@ -1,15 +1,19 @@
+import boganipsum from "boganipsum";
 import { $ } from "bun";
 import { spawnSync } from "node:child_process";
 import { resolve as resolvePath } from "node:path";
 
-import { args } from "./common";
-
 export default async function run(code: string) {
+  const testFilepath = resolvePath(__dirname, process.pid + ".txt");
   const filepath = resolvePath(__dirname, "solution.js");
 
-  await Bun.write(filepath, code);
+  const lines = Math.ceil(Math.random() * 50);
+  const txt = boganipsum({ paragraphs: lines });
 
-  const command = `bun run ${filepath} ${args.join(" ")}; rm ${filepath}`;
+  await Bun.write(filepath, code);
+  await Bun.write(testFilepath, txt);
+
+  const command = `bun run ${filepath} ${testFilepath}; rm ${filepath} ${testFilepath}`;
 
   try {
     spawnSync(command, { shell: true, stdio: "inherit" });
