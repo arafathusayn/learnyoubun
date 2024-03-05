@@ -1,7 +1,7 @@
 {
   "name": "learnyoubun",
   "description": "An intro to Bun via a set of self-guided workshops.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": {
     "name": "Arafat Husayn",
     "email": "hello@arafat.dev"
