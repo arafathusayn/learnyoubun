@@ -19,6 +19,7 @@ import { atom, getDefaultStore } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
 import { exercises, type Exercise } from "../exercises";
+import type { StorageSchmeaType } from "../schema";
 import { none, type Option } from "../utils/option";
 import { doneExercises, storage } from "../utils/storage";
 
@@ -31,9 +32,20 @@ export const instructionAtom = atom<Option<string>>(
   none() as unknown as Option<string>,
 );
 
-let nextUndoneExerciseIdx = exercises.findIndex(
-  (e) => !doneExercises.includes(e.value),
+let nextUndoneExerciseIdx = exercises.findIndex((e) =>
+  doneExercises.length > 0 ? !doneExercises.includes(e.value) : false,
 );
+
+export const defaultExercise: StorageSchmeaType["currentExercise"] =
+  storage.getItem("currentExercise", "0_hello") ||
+  exercises[nextUndoneExerciseIdx]?.value ||
+  "0_hello";
+
+if (nextUndoneExerciseIdx === -1) {
+  nextUndoneExerciseIdx = exercises.findIndex(
+    (e) => e.value === defaultExercise,
+  );
+}
 
 if (nextUndoneExerciseIdx === -1) {
   nextUndoneExerciseIdx = 0;
@@ -43,8 +55,9 @@ export const nextUndoneExerciseIndex = nextUndoneExerciseIdx;
 
 export const currentExerciseAtom = atomWithStorage<Exercise>(
   "currentExercise",
-  exercises[nextUndoneExerciseIndex]?.value || "0_hello",
+  defaultExercise,
   storage,
+  { getOnInit: true },
 );
 
 export const selectedExerciseAtom = atomWithStorage<Exercise>(
