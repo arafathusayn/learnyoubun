@@ -3,7 +3,7 @@ import { spawnSync } from "node:child_process";
 import { resolve as resolvePath } from "node:path";
 
 export default async function verify(code: string) {
-  const filepath = resolvePath(__dirname, "solution.test.ts");
+  const filepath = resolvePath(process.cwd(), "solution.test.js");
 
   await Bun.write(filepath, code);
 
