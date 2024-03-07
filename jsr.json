@@ -1,0 +1,5 @@
+{
+  "name": "@tsx/learnyoubun",
+  "version": "0.0.4",
+  "exports": "./cli.tsx"
+}
