@@ -76,13 +76,13 @@ export function createAsyncStorage(data: Record<string, unknown>) {
 
       return some(item);
     },
-    setItem: (key: string, value: unknown) => {
+    setItem: async (key: string, value: unknown) => {
       data[key] = value;
-      Bun.write(storagePath, JSON.stringify(data));
+      await Bun.write(storagePath, JSON.stringify(data));
     },
-    removeItem: (key: string) => {
+    removeItem: async (key: string) => {
       data[key] = undefined;
-      Bun.write(storagePath, JSON.stringify(data));
+      await Bun.write(storagePath, JSON.stringify(data));
     },
   };
 }

@@ -30,7 +30,7 @@ describe(`{{FILEPATH}}`, () => {
       const expected = await correctSolution(testFilepath);
       expect(output).toBe(expected);
 
-      savePassedExercise("2_my_first_io");
+      await savePassedExercise("2_my_first_io");
     },
     { timeout: 1000 },
   );

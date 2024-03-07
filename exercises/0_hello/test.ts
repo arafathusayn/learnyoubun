@@ -18,7 +18,7 @@ describe(`{{FILEPATH}}`, () => {
       const expected = "HELLO WORLD";
       expect(output).toBe(expected);
 
-      savePassedExercise("0_hello");
+      await savePassedExercise("0_hello");
     },
     { timeout: 1000 },
   );

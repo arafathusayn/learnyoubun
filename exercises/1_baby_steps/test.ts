@@ -24,7 +24,7 @@ describe(`{{FILEPATH}}`, () => {
       const expected = await correctSolution(argtext);
       expect(output).toBe(expected);
 
-      savePassedExercise("1_baby_steps");
+      await savePassedExercise("1_baby_steps");
     },
     { timeout: 1000 },
   );
