@@ -18,7 +18,7 @@ Check out the latest version from [the registry](https://www.npmjs.com/package/l
 bun remove -g learnyoubun
 bun install -g learnyoubun@<enter latest version>
 # example:
-bun install -g learnyoubun@0.0.4
+bun install -g learnyoubun@0.0.5
 ```
 
 ## Run from Terminal
