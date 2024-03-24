@@ -53,12 +53,9 @@ async function main(argc: number, argv: string[]) {
 
       const selectedExercise = store.get(selectedExerciseAtom);
 
-      const run = require(resolvePath(
-        __dirname,
-        "exercises",
-        selectedExercise,
-        "run.ts",
-      ));
+      const run = require(
+        resolvePath(__dirname, "exercises", selectedExercise, "run.ts"),
+      );
 
       await run.default(code);
 
@@ -90,12 +87,9 @@ async function main(argc: number, argv: string[]) {
         .replaceAll("{{FILEPATH}}", filepath)
         .replace("`{{CODE}}`;", "// " + code.trim().split("\n").join("\n// "));
 
-      const verify = require(resolvePath(
-        __dirname,
-        "exercises",
-        selectedExercise,
-        "verify.ts",
-      ));
+      const verify = require(
+        resolvePath(__dirname, "exercises", selectedExercise, "verify.ts"),
+      );
 
       await verify.default(testCode);
 
