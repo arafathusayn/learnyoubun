@@ -37,8 +37,11 @@ export function isSome<T>(value: T): value is Some<T> {
   return value !== null && value !== undefined;
 }
 
-export function isNone(value: any): value is None {
-  return value === null || value === undefined;
+export function isNone<T>(value: T): value is T & None {
+  return (
+    (typeof value === "object" && value === null) ||
+    (typeof value === "undefined" && value === undefined)
+  );
 }
 
 /**
